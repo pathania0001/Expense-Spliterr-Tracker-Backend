@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
-const { ENUMS } = require('../utils/comman/');
 const { USER_SCHEMA_ERROR } = require('./db.error.messages');
 const jwt = require('jsonwebtoken');
 const { ACCESS_TOKEN_EXPIRY, TOKEN_SECURITY_KEY, REFRESH_TOKEN_EXPIRY } = require('../config');
-const {USER , ADMIN} = ENUMS.USER_ROLE;
 const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
     name: {
@@ -17,19 +15,6 @@ const userSchema = new mongoose.Schema({
             message:USER_SCHEMA_ERROR.NAME_VALIDATION
         }
     },
-    username:{
-        type:String,
-        trim:true,
-        required:true,
-        unique:true
-    },
-   age: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 150,
-        },
-
     email:{
         type:String,
         required:true,
@@ -48,11 +33,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:[],
     }],
-    role:{
-        type:String,
-        enum:[USER,ADMIN],
-        default:USER
-    },
     createdAt:{
         type:Date,
         default:Date.now

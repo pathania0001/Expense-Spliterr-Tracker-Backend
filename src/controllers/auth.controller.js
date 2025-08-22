@@ -11,11 +11,8 @@ const signUp = async(req,res) =>{
     try {
         const response = await Service.Auth.singingUp({
             name:req.body.name,
-            username:req.body.username,
-            age:req.body.age,
             email:req.body.email,
             password:req.body.password,
-            role:ENUMS.USER_ROLE.USER
         });
         const refToken = response.refreshToken[0];
         const  accessToken = response.accessToken;
@@ -47,7 +44,7 @@ const signUp = async(req,res) =>{
 const login = async(req,res)=>{
   try {
     const user = await Service.Auth.signIn({
-      username:req.body.username,
+      email:req.body.email,
       password:req.body.password,
     })
 

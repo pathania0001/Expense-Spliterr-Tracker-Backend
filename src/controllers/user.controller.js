@@ -118,10 +118,29 @@ const deleteUser = async(req,res) => {
    
 
 }
+const currUser = (req,res)=>{
+    try {
+
+     if(!req.headers['x-user.id'] && req.user){
+        throw new ApiError(["User not Authenticated"],StatusCodes.UNAUTHORIZED)
+     }
+        SuccessResponse.data = req.user;
+        return res
+                 .status(StatusCodes.SUCCESS)
+                 .json(SuccessResponse)
+     
+    } catch (error) {
+        if(!error instanceof ApiError)
+           error = new ApiError(["Somethingwent Wrong during Authenticating current User"],StatusCodes.INTERNAL_SERVER_ERROR) 
+        ErrorResponse.error = error;
+        return res.status(error.statusCode).json(error);
+    }
+}
 module.exports = {
     addUser,
     getAllUsers,
     getUser,
     updateUser,
     deleteUser,
+    currUser
 }

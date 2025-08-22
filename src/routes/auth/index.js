@@ -27,4 +27,5 @@ authRoutes.route('/logout')
                Middleware.Auth.isUserAuthenticated,
                Controller.Auth.logout
           )
+
 module.exports = authRoutes;

@@ -22,10 +22,10 @@ const validateUserInput = (req,res,next)=>{
   next();
 }
 const validateLoginUserInput = (req,res,next)=>{
-   const  {username,password} = req.body;
+   const  {email,password} = req.body;
    const errors = [];
 
-  if (!username) errors.push("username is required");
+  if (!email) errors.push("email is required");
 
   if (!password) errors.push("password is required");
 
@@ -89,9 +89,9 @@ let decoded;
   })
     throw new ApiError(["Invalide Refresh Token"],StatusCodes.UNAUTHORIZED)
    }
-
-   req.headers["x-user-id"] = user.id;
-   req.headers['x-user-role'] = user.role;
+  
+   req.headers['x-user.id'] = user.id;
+   req.user = user;
    
   } catch (error) {
     if(error.name === "TokenExpiredError"){
@@ -111,29 +111,9 @@ let decoded;
    next();
 } 
 
-const isAdmin = async (req,res,next)=>{
-  try {
-    if(!req.headers["x-user-id"] || ! req.headers["x-user-role"]){
-      throw new ApiError(["Credentials are not valid or Invalid Token"],StatusCodes.UNAUTHORIZED)
-    }
 
-    if( req.headers["x-user-role"]!== ENUMS.USER_ROLE.ADMIN)
-      throw new ApiError(["Acccess Denied : Admin only"],StatusCodes.FORBIDDEN);
-
-  } catch (error) {
-    if(!(error instanceof ApiError))
-      error = new ApiError({type:error.name,message:error.message},StatusCodes.INTERNAL_SERVER_ERROR)
-    ErrorResponse.error = error;
-    return res
-             .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
-             .json(ErrorResponse)
-  }
-
-  next();
-}
 module.exports = {
     validateUserInput,
     validateLoginUserInput,
     isUserAuthenticated,
-    isAdmin,
 }
