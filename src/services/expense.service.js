@@ -7,7 +7,7 @@ const createExpense = async(data)=>{
        const expense = await expenseRepo.create(data);
        return expense;
     } catch (error) {
-        console.log("error :in serivce",error)
+        console.log("error :in expense serivce",error)
         throw new ApiError([
 
             {

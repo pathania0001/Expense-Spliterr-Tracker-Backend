@@ -42,3 +42,4 @@ const settlementSchema = new mongoose.Schema({
 })
 
 const Settlement = mongoose.model('Settlement',settlementSchema);
+module.exports = Settlement;
