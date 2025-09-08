@@ -14,8 +14,8 @@ const singingUp = async(data) => {
          const user = await createUser(data);
          return user;
          } catch (error) {
-           // console.log("for programm error or non-db error",error)
-         //console.log("In Services :",JSON.stringify(error,null,2)); //  for syntax error or non-Database error (typeError or somthings else which is nondatabase related error)
+            console.log("for programm error or non-db error",error)
+         console.log("In Services :",JSON.stringify(error,null,2)); //  for syntax error or non-Database error (typeError or somthings else which is nondatabase related error)
          if(error instanceof ApiError)
             throw error
         try {
@@ -31,7 +31,7 @@ const singingUp = async(data) => {
 const signIn = async(data)=>{
       try {
 
-         const responseUser = await userRepository.findOne({ username: data.username })
+         const responseUser = await userRepository.findOne({ email: data.email })
         
           if (!responseUser) {
                throw new ApiError("User not found", StatusCodes.NOT_FOUND);

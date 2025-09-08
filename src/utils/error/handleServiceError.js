@@ -2,8 +2,7 @@ const { StatusCodes } = require("../constants/");
 const { ApiError, ValidationError } = require("./index.js");
 
 const handleServiceError = (error) => {
-  
-  if (error.name === "ValidationError") {
+   if (error.name === "ValidationError") {
     const explanation = Object.keys(error.errors).map((key) => {
       const { name: error_type, message } = error.errors[key];
       return { error_type, message };

@@ -13,6 +13,7 @@ class UserRepository extends CrudRepositories {
       session.startTransaction();
    try {
       const newUser  = new User(data);
+      console.log("user :",newUser)
      const accessToken = await  newUser.generateAccessToken();
      const refreshToken = await  newUser.generateRefreshToken();
        newUser.refreshToken.push(refreshToken);
@@ -23,6 +24,7 @@ class UserRepository extends CrudRepositories {
       delete user.password;
      return  { ...user,accessToken}
    } catch (error) {
+      console.log("error in repo :",error)
       await session.abortTransaction();
       throw error;
    }finally{

@@ -1,6 +1,7 @@
 const { ErrorResponse } = require("../utils/comman");
 const { StatusCodes } = require("../utils/constants");
-const { Expense_Required_Fields } = require("../utils/constants/expense.data.fields");
+const { Expense_Required_Fields } = require("../utils/constants/expense.datafields");
+
 const { ValidationError } = require("../utils/error");
 
 const validateExpenseData = async(req,res,next)=>{

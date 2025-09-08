@@ -9,9 +9,10 @@ const routes = require('./routes');
 
 app.use(
   cors({
-    origin: "*",       // allow all origins
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: "http://localhost:3000",       // allow all origins
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"], // allow headers you expect
+    credentials: true,  
   })
 );
 

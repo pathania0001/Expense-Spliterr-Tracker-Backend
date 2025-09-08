@@ -38,24 +38,20 @@ const validateLoginUserInput = (req,res,next)=>{
 }
 const isUserAuthenticated = async(req,res,next)=>{
   try {
-    if(!req?.headers?.authorization){
-          throw new ApiError(["Access-Token not found"],StatusCodes.UNAUTHORIZED)
-    }
-   const accessToken = req.headers.authorization.split("Bearer ").slice(-1).join("")
-   //console.log("accessToken :",accessToken)
+    console.log("inside the authmiddleware")
+
+    console.log("signed Cookie :",req.signedCookies)
+
+   const {refreshToken,accessToken} = req.signedCookies;
+
      if(!accessToken)
    {
     throw new ApiError(["Access-Token not found"],StatusCodes.UNAUTHORIZED)
    }
-
-   console.log(req.signedCookies)
-   const {refreshToken} = req.signedCookies;
+   
    if(!refreshToken){
       throw new ApiError(["Refresh Token not Found"],StatusCodes.UNAUTHORIZED)
    }
-
-   //console.log("refreshToken :",refreshToken)
-   
 
 let decoded;
     try {

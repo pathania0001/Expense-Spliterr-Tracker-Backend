@@ -20,15 +20,22 @@ const signUp = async(req,res) =>{
       
         SuccessResponse.data =  response;
         return res
-                  .cookie("refreshToken",refToken,{
-                    httpOnly:true,
-                    secure:true,
-                    signed:true,
-                    maxAge:24*60*60 *1000
-                  })
-                  .setHeader("Authorization",`${accessToken}`)
-                  .status(StatusCodes.CREATED)
-                  .json(SuccessResponse)
+                .cookie("refreshToken", refToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                signed:true,
+                maxAge: 7 * 24 * 60 * 60 * 1000, 
+              })
+              .cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                signed:true,
+                maxAge: 60 * 60 * 1000,
+              })
+              .status(StatusCodes.CREATED)
+              .json(SuccessResponse)
 
     } catch (error) {
         if(!(error instanceof ApiError)){  
@@ -54,13 +61,20 @@ const login = async(req,res)=>{
    
     SuccessResponse.data = user;
     return res
-              .cookie("refreshToken",refreshToken,{
+              .cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
                 signed:true,
-                httpOnly:true,
-                secure:true,
-                maxAge:24*60*60*1000,
+                maxAge: 7 * 24 * 60 * 60 * 1000, 
               })
-              .setHeader("Authorization",`${accessToken}`)
+              .cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                signed:true,
+                maxAge: 60 * 60 * 1000,
+              })
               .status(StatusCodes.SUCCESS)
               .json(SuccessResponse)
 
@@ -97,10 +111,17 @@ const refreshAuthTokens = async(req,res)=>{
        const response =  await Service.Auth.refreshAuthTokens(decodedToken,refreshTokenFromReq)
       
        SuccessResponse.data = response;
-       
+       const { accessToken } = response; 
        return res
                 .status(StatusCodes.SUCCESS)
-                .json(SuccessResponse);
+                .cookie("accessToken",accessToken,{
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                signed:true,
+                maxAge: 60 * 60 * 1000,
+                })
+                .json(SuccessResponse)
 
   } catch (error) {
     console.error(error)
@@ -123,11 +144,8 @@ const refreshAuthTokens = async(req,res)=>{
 
 const logout = async(req,res)=>{
   console.log("insied-logout-controller")
-  res.clearCookie("refreshToken",{
-    signed:true,
-    httpOnly:true,
-    secure:true
-  })
+   res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
 
   SuccessResponse.message = "SuccesFully Logout"
   SuccessResponse.data = null;
