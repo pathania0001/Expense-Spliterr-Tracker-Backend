@@ -7,11 +7,14 @@ const { COOKIE_SIGN} = require('./config');
 const authRoutes = require('./routes/auth');
 const routes = require('./routes');
 
+const {mongoDB} = require('./db')
+mongoDB();
+
 app.use(
   cors({
-    origin: "http://localhost:3000",       // allow all origins
+    origin: "http://localhost:3000",    
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"], // allow headers you expect
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,  
   })
 );

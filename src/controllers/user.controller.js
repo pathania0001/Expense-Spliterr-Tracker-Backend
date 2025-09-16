@@ -1,7 +1,7 @@
 const Service = require("../services");
 const {SuccessResponse , ENUMS, ErrorResponse} = require('../utils/comman');
 const { USER_ROLE } = require("../utils/comman/enum");
-const { StatusCodes, User_Updatable_Fields } = require("../utils/constants");
+const { StatusCodes, User_Updatable_Fields, filter } = require("../utils/constants");
 const { ApiError } = require("../utils/error");
 
 const addUser = async(req,res) => {
@@ -33,7 +33,10 @@ const getAllUsers = async (req,res) => {
     console.log("inside user-controller-getAllUsers")
 
       try {
-           const users  = await Service.User.getAllUsers();
+          const filters = {...req.query};
+          console.log("reqq :",filters)
+           const users  = await Service.User.getAllUsers(filters);
+           
     SuccessResponse.data = users;
     return res
             .status(StatusCodes.SUCCESS)

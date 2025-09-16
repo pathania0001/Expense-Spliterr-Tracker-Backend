@@ -16,7 +16,7 @@ const { ApiError } = require('../utils/error')
     }
     
     async getAll(condition){
-      const response = await this.model.find(condition);
+      const response = await this.model.find(condition); ;
        return response;
     }
     async getOne(condition){

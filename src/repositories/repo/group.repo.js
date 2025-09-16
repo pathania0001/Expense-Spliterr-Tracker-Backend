@@ -6,6 +6,10 @@ class GroupRepository extends CrudRepositories{
     constructor(){
         super(Group)
     }
+    async getAll(condition){
+      const response = await this.model.find(condition).populate("members","name,email"); ;
+       return response;
+    }
 }
 
 module.exports = GroupRepository;

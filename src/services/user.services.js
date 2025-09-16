@@ -1,6 +1,6 @@
 
 const {UserRepository} = require('../repositories')
-const {StatusCodes} = require('../utils/constants');
+const {StatusCodes, filter} = require('../utils/constants');
 const { ApiError } = require('../utils/error');
 const handleServiceError = require('../utils/error/handleServiceError');
 const userRepository = new UserRepository();
@@ -24,9 +24,17 @@ const createUser = async (data) => {
     }
 }
 
-const getAllUsers = async () => {
+const getAllUsers = async ({searchText}) => {
     try{   
-        const allUsers = await userRepository.getAll();
+        const customFilter = {};
+        if(searchText){
+            customFilter.$or = [
+                { name : {$regex : searchText ,$options : 'i'}},
+                { email : {$regex : searchText, $options : 'i'}}
+            ]
+        }
+        const allUsers = await userRepository.getAll(customFilter);
+       console.log("filter :",searchText,"where :",customFilter,"result :",)
         return allUsers;
     } catch (error) {
         // console.log("In Services :",JSON.stringify(error,null,2));

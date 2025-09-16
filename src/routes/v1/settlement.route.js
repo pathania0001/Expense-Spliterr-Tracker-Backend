@@ -6,8 +6,15 @@ const settlementRoutes = express.Router();
 
 settlementRoutes.route('/create')
 .post(
+     Middleware.Auth.isUserAuthenticated,
      Middleware.Settlement.validateNewSettlementRequest ,
      Controller.Settlement.createSettlement
     );
+settlementRoutes.route('/person/:id')
+.get(
+     Middleware.Auth.isUserAuthenticated,
+     Controller.Settlement.getSettlementDataWithUser
+    );
+
 
 module.exports = settlementRoutes;

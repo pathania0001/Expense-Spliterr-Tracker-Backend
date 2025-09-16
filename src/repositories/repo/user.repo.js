@@ -36,6 +36,8 @@ class UserRepository extends CrudRepositories {
    async findOne(condition) {
       return await User.findOne(condition).select("+password") 
    }
+
+
 }
 
 module.exports = UserRepository;

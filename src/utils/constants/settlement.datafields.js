@@ -1,5 +1,5 @@
 
-const SETTLEMENTS_REQUIRED_FEILDS = ["date","amount","paidToUser","paidByUser"]
+const SETTLEMENTS_REQUIRED_FEILDS = ["amount","receivedByUserId","paidByUserId"]
 
 module.exports = {
     SETTLEMENTS_REQUIRED_FEILDS,

@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const settlementSchema = new mongoose.Schema({
     description:{
         type:String,
-        required:true
     },
     paidByUser:{
         type:mongoose.Schema.Types.ObjectId,
@@ -16,7 +15,7 @@ const settlementSchema = new mongoose.Schema({
         ref:"User",
         required:true,
     },
-    amonut:{
+    amount:{
         type:Number,
         required:true,
     },
@@ -34,10 +33,6 @@ const settlementSchema = new mongoose.Schema({
         type:Date,
         default:Date.now,
         required:true,
-    },
-    relatedToExpense:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Expense"
     }
 })
 

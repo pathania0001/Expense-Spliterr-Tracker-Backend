@@ -49,7 +49,9 @@ const expenseSchema = new mongoose.Schema({
                  paid:{
                     type:Boolean,
                     default:false
-                 }}],
+                 },
+                _id:false,
+            }],
     createdAt:{
         type:Date,
         default:Date.now

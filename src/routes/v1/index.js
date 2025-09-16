@@ -3,6 +3,7 @@ const userRoutes = require('./user.route');
 const exprenseRoutes = require('./expense.route');
 const groupRoutes = require('./group.route');
 const settlementRoutes = require('./settlement.route');
+const contactRoutes = require('./contacts.routes');
 
 const v1Routes = Router();
 
@@ -13,5 +14,7 @@ v1Routes.use('/expense',exprenseRoutes);
 v1Routes.use('/group',groupRoutes)
 
 v1Routes.use('/settlement',settlementRoutes);
+
+v1Routes.use('/contacts',contactRoutes);
 
 module.exports = v1Routes;
