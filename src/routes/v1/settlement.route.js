@@ -15,6 +15,11 @@ settlementRoutes.route('/person/:id')
      Middleware.Auth.isUserAuthenticated,
      Controller.Settlement.getSettlementDataWithUser
     );
+settlementRoutes.route('/group/:id')
+.get(
+     Middleware.Auth.isUserAuthenticated,
+     Controller.Settlement.getSettlementDataInGroup
+    );
 
 
 module.exports = settlementRoutes;

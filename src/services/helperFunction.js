@@ -1,3 +1,4 @@
+
 const netBalanceWithExpenses = (expenses , {userId , partnerId , otherPartner })=>{
    
     const forUser = {
@@ -63,8 +64,8 @@ const netBalanceWithExpenses = (expenses , {userId , partnerId , otherPartner })
         netUserExpenseAmount,
     }
 }
-const netBalanceWithSettlements = (settlements , {userId , partnerId })=>{
-    console.log("settlements :",JSON.stringify(settlements,null,2))
+const netBalanceWithSettlements = (settlements, {userId , partnerId })=>{
+   // console.log("settlements in helper function:",JSON.stringify(settlements,null,2))
     let paidByUser = 0;
     let paidByPartner = 0;
     settlements.length && settlements.forEach( settlement => {
@@ -79,17 +80,141 @@ const netBalanceWithSettlements = (settlements , {userId , partnerId })=>{
     
     const netSettlementByUser = paidByUser - paidByPartner;
     
-     console.log("net Amount:",netSettlementByUser , "paidByPartner :",paidByPartner,"paid by user :",paidByUser )
+     //console.log("net Amount:",netSettlementByUser , "paidByPartner :",paidByPartner,"paid by user :",paidByUser )
     return {
         userId:paidByUser,
         partnerId:paidByPartner,
         netSettledAmount:netSettlementByUser,
     }
 }
+const legderOfUserInGroupExpenses = (expenses,balances,membersKeyValue, {userId})=>{
+   const mainUser = userId.toString()
+   balances.name = membersKeyValue[mainUser].name;
+   balances.email = membersKeyValue[mainUser].email;
+   let totalPaidByUser = 0;
+   let totalAmountNeedsTopayByUser = 0;
+   
+   const members_ids = Object.keys(membersKeyValue);
+   
+   expenses.length && expenses.map( expense => {
+       const expenseAmount = Number(expense.amount);
+       const currWhoPay = expense.paidByUserId._id.toString();
+       const splitingKeyValue = Object.fromEntries(expense.splits.map( split =>{
+        
+        return [split.userId._id,{amount:split.amount}]
+       }))
+    //    console.log(splitingKeyValue)
+       if(currWhoPay !== mainUser){ 
+           const amount = Number(splitingKeyValue[mainUser].amount)
+           membersKeyValue[currWhoPay]["netBalance"] = (membersKeyValue[currWhoPay]["netBalance"] || 0) - amount;
+           totalAmountNeedsTopayByUser += amount;
+        //    console.log("here :",amount);
+        }
+        else{
+            members_ids.map( idx =>{
+                const amount = Number(splitingKeyValue[idx].amount)
+                if(idx.toString() !== mainUser){
+                    membersKeyValue[idx]["netBalance"] = (membersKeyValue[idx]["netBalance"] || 0) + amount;
+                }
+                else{
+                    totalAmountNeedsTopayByUser += amount;
+                    totalPaidByUser += expenseAmount;
+                }
+            })
+            
+        }
+        
+
+  })
+
+//   expenses.length && expenses.map( exp => {
+//     const amount = Number(exp.amount);
+//     const keyValueOfSplits = exp.splits.map( split =>{split._id:})
+//     for( let idx = 0;idx<exp.splits.length;idx++){
+//         const currId = exp.splits[idx].userId._id.toString();
+//         const amountNeedsToPay = exp.splits[idx].amount;
+//       if(currId === userId.toString()){
+//            if(exp.paidByUserId._id.toString() === userId.toString()){
+//             totalPaidByUser+=amount;
+//              if (!ledger[currId]) {
+//                 const {name,email,_id} = exp.paidByUserId
+//             ledger[currId] = { name,email,userId:_id, netBalance: 0 };
+//           }
+//            }
+//         else{
+//               if (!ledger[currId]) {
+//                 const {name,email,_id} = exp.paidByUserId
+//             ledger[currId] = { name,email,userId:_id, netBalance: 0 };
+//           }
+//           ledger[currId].netBalance -= amountNeedsToPay;
+
+//         }
+//         totalAmountNeedsTopayByUser += amountNeedsToPay;
+//         break;
+//         }
+//     }
+
+//   })
+
+  const netBalanceInExpenses = totalPaidByUser - totalAmountNeedsTopayByUser;
+   //console.log("balance in expense",membersKeyValue)
+  //console.log("netBalanceInExpenses ok",netBalanceInExpenses,"totalPaidByUser",totalPaidByUser,"totalAmountNeedsTopayByUser",totalAmountNeedsTopayByUser)
+  return {
+    netBalanceInExpenses
+  }
+}
+
+const ledgerOfUserInGroupSettlements = ( settlements,membersKeyValue,{userId}) =>{
+    let totalPaidByUser = 0;
+    let totalPaidToUser = 0;
+    const mainUser = userId.toString();
+   settlements.length && settlements.map( settlement => {
+        const amount = Number(settlement.amount);
+        const paidByUserId = settlement.paidByUser._id.toString();
+        const paidToUserId = settlement.paidToUser._id.toString();
+          // console.log(paidByUserId,mainUser,paidByUserId === mainUser)
+        if(paidByUserId === mainUser)
+            {
+            membersKeyValue[paidToUserId].netBalance+=amount;
+            totalPaidByUser+=amount;
+        }
+        else{
+            membersKeyValue[paidByUserId].netBalance-=amount;
+            totalPaidToUser+=amount;
+        }
+    });
+    //console.log("balance in settlement",membersKeyValue)
+    const netCashFlowInUserSettlements = totalPaidByUser-totalPaidToUser;
+    //console.log("netCashFlowInUserSettlements",netCashFlowInUserSettlements,"totalPaidByUser",totalPaidByUser,"totalPaidByUser",totalPaidByUser)
+    return{
+        netCashFlowInUserSettlements
+    }
+}
+
+const filteringTheBalanceSheet = (balances,membersKeyValue)=>{
+    const members = Object.keys(membersKeyValue);
+    const owes = [];
+    const owedBy=[];
+    // console.log("mememme :",membersKeyValue)
+    members.forEach( memId =>{
+        if(membersKeyValue[memId].netBalance<0){
+            owes.push({to:memId,amount:membersKeyValue[memId].netBalance});
+        }
+        else if(membersKeyValue[memId].netBalance>0){
+            owedBy.push({from:memId,amount:membersKeyValue[memId].netBalance});
+        }
+    })
+    // console.log("owes :",owes)
+    // console.log("owedBy :",owedBy)
+    balances.owedBy = owedBy;
+    balances.owes = owes;
+}
 
 module.exports = {
 
     netBalanceWithExpenses,
-    netBalanceWithSettlements
-
+    netBalanceWithSettlements,
+    legderOfUserInGroupExpenses,
+    ledgerOfUserInGroupSettlements,
+    filteringTheBalanceSheet
 }

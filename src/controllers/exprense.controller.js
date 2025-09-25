@@ -19,7 +19,7 @@ const createExpenses = async(req,res)=>{
          })
 
          SuccessResponse.data = response;
-         console.log("response :",response)
+         //console.log("response :",response)
          return res.status(StatusCodes.CREATED).json(SuccessResponse);
      } catch (error) {
         console.log("error :",error)
@@ -55,7 +55,7 @@ const getUserExpenses = async(req,res)=>{
         userId:req.user._id
        });
          SuccessResponse.data = response;
-         console.log("response :",response)
+         //console.log("response :",response)
          return res.status(StatusCodes.CREATED).json(SuccessResponse);
     } catch (error) {
         console.log("error ",error)
@@ -77,7 +77,7 @@ const getUserExpenseWith = async( req,res )=>{
           partnerId:req.params.id
        });
        SuccessResponse.data = response;
-         console.log("response :",response)
+         // console.log("response :",response)
          return res.status(StatusCodes.CREATED).json(SuccessResponse); 
   } catch (error) {
     console.log("error ",error)
@@ -96,10 +96,45 @@ const getUserExpenseInGroup = async( req,res )=>{
           groupId:req.params.id
        });
        SuccessResponse.data = response;
-         console.log("response :",response)
+         //console.log("response :",response)
          return res.status(StatusCodes.CREATED).json(SuccessResponse); 
   } catch (error) {
     console.log("error ",error)
+         if(!(error instanceof ApiError ))
+            error = new ApiError([{type:error.name,message:error.message}],StatusCodes.INTERNAL_SERVER_ERROR);
+
+        ErrorResponse.error = error;
+
+        return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
+const getExpensesOverPeriod = async(req,res)=>{
+    try {
+        const response = await Service.Expense.getperiodicExpenses({userId:req.user._id});
+        SuccessResponse.data = response;
+        return res.status(StatusCodes.SUCCESS).json(SuccessResponse);
+    } catch (error) {
+        console.log("error :",error)
+        console.log("error in period expanes data controller ",JSON.stringify(error,null,2))
+         if(!(error instanceof ApiError ))
+            error = new ApiError([{type:error.name,message:error.message}],StatusCodes.INTERNAL_SERVER_ERROR);
+
+        ErrorResponse.error = error;
+
+        return res.status(error.statusCode).json(ErrorResponse);
+    }
+}
+
+const deleteExpenses = async(req,res)=>{
+  try {
+    const response = await Service.Expense.deleteExpense({
+      expenseId:req.params.id
+    })
+    SuccessResponse.data = response;
+    return res.status(StatusCodes.SUCCESS).json(SuccessResponse)
+  } catch (error) {
+    console.log("error :",error)
+        console.log("error in deleting expanes data controller ",JSON.stringify(error,null,2))
          if(!(error instanceof ApiError ))
             error = new ApiError([{type:error.name,message:error.message}],StatusCodes.INTERNAL_SERVER_ERROR);
 
@@ -113,5 +148,7 @@ module.exports = {
     createExpenses,
     getUserExpenses,
     getUserExpenseWith,
-    getUserExpenseInGroup
+    getUserExpenseInGroup,
+    getExpensesOverPeriod,
+    deleteExpenses
 }

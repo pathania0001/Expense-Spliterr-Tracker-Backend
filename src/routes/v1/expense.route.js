@@ -20,5 +20,13 @@ exprenseRoutes.route('/group/:id').get(
     Middleware.Auth.isUserAuthenticated,
     Controller.Expense.getUserExpenseInGroup
 )
+exprenseRoutes.route('/periodic-expenses').get(
+    Middleware.Auth.isUserAuthenticated,
+    Controller.Expense.getExpensesOverPeriod
+)
+exprenseRoutes.route('/:id').delete(
+    Middleware.Auth.isUserAuthenticated,
+    Controller.Expense.deleteExpenses
+)
 
 module.exports = exprenseRoutes;

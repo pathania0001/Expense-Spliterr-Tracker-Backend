@@ -46,10 +46,30 @@ const getSettlementDataWithUser = async(req,res)=>{
         }
     }
 }
+const getSettlementDataInGroup = async(req,res)=>{
+    console.log("inside group settlement controller-getSettlementData");
+
+    try {
+         const response = await Service.Settlement.getUserSettlementDataInGroup({
+            groupId:req.params.id,
+            userId:req.user._id
+         })
+           SuccessResponse.data = response;
+         return res.status(StatusCodes.SUCCESS).json(SuccessResponse)
+    } catch (error) {
+        if(!(error instanceof ApiError)){
+            error  = new ApiError({type:error.name,message:["Something went wrong during fetching settlement data with user",error.message]},StatusCodes.INTERNAL_SERVER_ERROR);
+
+        ErrorResponse.error = error;
+        return res.status(error.statusCode).json(ErrorResponse)
+        }
+    }
+}
 
 
 
 module.exports = {
     createSettlement,
-    getSettlementDataWithUser
+    getSettlementDataWithUser,
+    getSettlementDataInGroup
 }

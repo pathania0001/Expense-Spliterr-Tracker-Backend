@@ -6,7 +6,7 @@ class ExpenseRepository extends CrudRepositories{
        super(Expense);
     }
     async getAll(query){
-        console.log("query ",query)
+       // console.log("query ",query)
        return await Expense.find(query)
       .populate("paidByUserId", "name email")  
       .populate("createdBy", "name email")     

@@ -7,7 +7,11 @@ class GroupRepository extends CrudRepositories{
         super(Group)
     }
     async getAll(condition){
-      const response = await this.model.find(condition).populate("members","name,email"); ;
+      const response = await this.model.find(condition).populate("members",["name","email"]); ;
+       return response;
+    }
+    async get(id){
+      const response = await this.model.findById(id).populate("members",["name","email"]); ;
        return response;
     }
 }

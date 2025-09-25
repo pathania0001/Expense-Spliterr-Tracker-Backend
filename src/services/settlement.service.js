@@ -27,7 +27,9 @@ const getAllSettlements = async( customFilter )=>{
 }
 const getSettlementsInUsers = async({userId,partnerId})=>{
     try {
-        const customFilter = {};
+        const customFilter = {
+            groupId: { $eq: null }
+        };
         if(userId && partnerId)
         {
             customFilter.$or = [
@@ -43,7 +45,7 @@ const getSettlementsInUsers = async({userId,partnerId})=>{
          throw error;
     }
 }
-const getSettlementsInGroup = async({userId,groupId})=>{
+const getUserSettlementsInGroup = async({userId,groupId})=>{
     try {
         const customFilter = {
             groupId
@@ -80,10 +82,53 @@ const getSettlementDataWith = async ({userId,partnerId})=>{
          throw error;
     }
 }
+const getUserSettlementDataInGroup = async ({userId,groupId})=>{
+    try {console.log("inside group settlement data service")
+        const { expensesInGroup } = require("./expense.service");
+        const response = await expensesInGroup({userId,groupId});
+        const balances = [];
+        
+        const owes = response.balances.owes;
+        const owedBy = response.balances.owedBy;
+        console.log("response of settlements",response)
+        const userMap = Object.fromEntries( response?.group.members.map( mem =>([mem._id,mem])))  
+        // console.log("response of settlements",userMap)
+
+        if(owes.length){
+           owes.map( owe =>{
+            balances.push({
+            name:userMap[owe.to].name,
+            userId:owe.to,
+            netBalance:owe.amount
+           })
+           })
+    }
+        if(owedBy.length){
+           owedBy.map( oweBy =>{
+            balances.push({
+            name:userMap[oweBy.from].name,
+            userId:oweBy.from,
+            netBalance:oweBy.amount
+           })
+           })
+    }
+        console.log("response of settlements",balances)
+        return {
+            group:response.group,
+            balances,
+        }
+    } catch (error) {
+        console.log("error ,",error)
+          if(!(error instanceof ApiError))
+            throw new ApiError({type:error.name,message:["something went wrong during fetching settlements userSettlemnts",error.message]},StatusCodes.INTERNAL_SERVER_ERROR)
+         throw error;
+    }
+}
 module.exports = {
     create,
     getAllSettlements,
     getSettlementsInUsers,
-    getSettlementsInGroup,
-    getSettlementDataWith
+    getUserSettlementsInGroup,
+    getSettlementDataWith,
+    getUserSettlementDataInGroup
 }

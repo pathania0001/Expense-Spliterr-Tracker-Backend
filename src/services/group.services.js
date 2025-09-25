@@ -24,7 +24,7 @@ const getAllGroups = async(userId)=>{
       customFilter["members"] = userId;
     }
     const response = await groupRepo.getAll(customFilter);
-    // console.log("all groups",JSON.stringify(response,2))
+    //  console.log("all groups",JSON.stringify(response,2))
       return response;
   } catch (error) {
      if(!(error instanceof ApiError))

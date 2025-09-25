@@ -4,10 +4,17 @@ const { ApiError } = require("../utils/error");
 const Service = require("../services")
 const getUserContactedWith = async(req,res)=>{
     try {
-        const response = await Service.Contact.userContactedWith({
+        const users = await Service.Contact.userContactedWith({
             userId:req.user._id
         })
-        SuccessResponse.data = response;
+        const groups = await Service.Contact.userContactedInGroup({
+            userId:req.user._id
+        })
+
+        SuccessResponse.data = {
+            users,
+            groups
+        };
         return res.status(StatusCodes.SUCCESS).json(SuccessResponse);
     } catch (error) {
         console.log("error in contact controller ",error)

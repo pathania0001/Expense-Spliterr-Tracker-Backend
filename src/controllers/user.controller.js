@@ -34,7 +34,7 @@ const getAllUsers = async (req,res) => {
 
       try {
           const filters = {...req.query};
-          console.log("reqq :",filters)
+         // console.log("reqq :",filters)
            const users  = await Service.User.getAllUsers(filters);
            
     SuccessResponse.data = users;
@@ -85,7 +85,7 @@ const updateUser = async(req,res) => {
               }
           }) 
     const user  = await Service.User.updateUser(id,dataToUpdate);
-    console.log(user)
+    //console.log(user)
     SuccessResponse.data = user;
 
     return res
