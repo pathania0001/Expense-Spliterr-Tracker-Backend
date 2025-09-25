@@ -20,7 +20,8 @@ const getBalances = async(req,res)=>{
     }
 }
 const getBalancesInGroup = async(req,res)=>{
- try {
+ try { 
+    // console.log("curr-User",req.user)
         const response = await Service.Dashboard.getBalancesInGroup({
             userId:req.user._id
         })

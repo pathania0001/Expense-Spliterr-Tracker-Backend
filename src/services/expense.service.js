@@ -60,15 +60,20 @@ const personalExpensesWithUsers = async(userId)=>{
             ]
         }
         const personalExpenses = await expenseRepo.getAll(customFilter);
-         // console.log("check daata",JSON.stringify(personalExpenses,null,2));
+        //console.log("check daata",JSON.stringify(personalExpenses,null,2));
       
         // return [];
          let usersExpenseWith = personalExpenses.map( exp => {
              let otherUser = {};
+            // console.log("exp :",JSON.stringify(exp,null,2))
              exp.splits.forEach( contact => {
+                if(contact.userId._id.toString()===userId.toString())
+                    return;
                 const {_id,name,email} = contact.userId;
                 otherUser = {_id,name,email};
+                //console.log("contact :",contact)
              })
+            // console.log("other user",otherUser)
              return otherUser;
          })
          const present = new Set();
@@ -80,7 +85,8 @@ const personalExpensesWithUsers = async(userId)=>{
                 present.add(user._id)
              }
          })
-        //  console.log("actual ans :",usersExpenseWith);
+        //   console.log("actual ans :",usersExpenseWith);
+        //   console.log("uniqe ones :",uniqueUsers)
          return uniqueUsers;
     } catch (error) {
         console.log("error ",error)
@@ -157,7 +163,7 @@ const expensesInGroup = async({ userId , groupId}) =>{
                return [_id,{name,email,_id}]}));  
             //console.log(" expenses with user",JSON.stringify(expenses,null,2))
             const settlements = await getUserSettlementsInGroup({userId,groupId});
-            console.log(" settlemnts in group",JSON.stringify(settlements,null,2))
+           // console.log(" settlemnts in group",JSON.stringify(settlements,null,2))
 
             const { netBalanceInExpenses } = legderOfUserInGroupExpenses( expenses,balances,membersKeyValue,{userId});
       

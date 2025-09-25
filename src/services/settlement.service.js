@@ -5,7 +5,7 @@ const { ApiError } = require("../utils/error");
   const settlementRepo = new SettlementRepository();
 const create = async(data)=>{
     try {
-        console.log("data in coming req :",data)
+        // console.log("data in coming req :",data)
         const response = await settlementRepo.create(data);
         return response;
     } catch (error) {
@@ -90,7 +90,7 @@ const getUserSettlementDataInGroup = async ({userId,groupId})=>{
         
         const owes = response.balances.owes;
         const owedBy = response.balances.owedBy;
-        console.log("response of settlements",response)
+        // console.log("response of settlements",response)
         const userMap = Object.fromEntries( response?.group.members.map( mem =>([mem._id,mem])))  
         // console.log("response of settlements",userMap)
 
@@ -112,7 +112,7 @@ const getUserSettlementDataInGroup = async ({userId,groupId})=>{
            })
            })
     }
-        console.log("response of settlements",balances)
+        // console.log("response of settlements",balances)
         return {
             group:response.group,
             balances,

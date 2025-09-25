@@ -22,9 +22,9 @@ const getBalancesInGroup = async({userId})=>{
 const getBalances = async({userId})=>{
     try {
         const users = await userContactedWith({userId});
-        
+        console.log("user :",users)
        const allUsersData = await Promise.all(users.map( withUser => ( expenseWithPerson({ userId , partnerId:withUser._id}))))
-
+       //console.log("allUsers:",JSON.stringify(allUsersData,null,2))
        let payByOthers = 0.00,payToOthers=0.00;
 
        const youAreOwedBy = [];
