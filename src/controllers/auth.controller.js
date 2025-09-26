@@ -61,20 +61,20 @@ const login = async(req,res)=>{
    
     SuccessResponse.data = user;
     return res
-              .cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-                signed:true,
-                maxAge: 7 * 24 * 60 * 60 * 1000, 
-              })
-              .cookie("accessToken", accessToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-                signed:true,
-                maxAge: 60 * 60 * 1000,
-              })
+         .cookie("refreshToken", refreshToken, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+              signed: true,
+              maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
+            .cookie("accessToken", accessToken, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+              signed: true,
+              maxAge: 60 * 60 * 1000,
+            })
               .status(StatusCodes.SUCCESS)
               .json(SuccessResponse)
 
