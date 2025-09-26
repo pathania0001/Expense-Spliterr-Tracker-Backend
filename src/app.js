@@ -12,7 +12,7 @@ mongoDB();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],    
+    origin: ["http://localhost:3000", "http://localhost:3001","https://splitrr-mern-frontend.vercel.app/"],    
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,  
