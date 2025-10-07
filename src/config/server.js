@@ -8,6 +8,9 @@
  const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY;
  const COOKIE_SIGN = process.env.COOKIE_SIGN;
  const MAX_DEVICE = process.env.MAX_DEVICE;
+ const GMAIL_EMAIL = process.env.GMAIL_EMAIL;
+ const GMAIL_PASS = process.env.GMAIL_PASS;
+ 
 module.exports = {
     PORT,
     DB_NAME,
@@ -17,4 +20,6 @@ module.exports = {
     REFRESH_TOKEN_EXPIRY,
     COOKIE_SIGN,
     MAX_DEVICE,
+    GMAIL_EMAIL,
+    GMAIL_PASS
 }

@@ -52,22 +52,21 @@ const getUserExpenses = async({userId})=>{
 
 const personalExpensesWithUsers = async(userId)=>{
     try { 
-        const customFilter = {};
-        if(userId){
-            customFilter.$and = [
-                { groupId: { $eq: null }},
-                {"splits.userId":userId}
-            ]
+       const customFilter = { groupId: null };
+
+        if (userId) {
+        customFilter["splits.userId"] = userId;
         }
+
         const personalExpenses = await expenseRepo.getAll(customFilter);
-        //console.log("check daata",JSON.stringify(personalExpenses,null,2));
+        //console.log("check daata",JSON.stringify(personalExpenses.length,null,2));
       
         // return [];
          let usersExpenseWith = personalExpenses.map( exp => {
              let otherUser = {};
             // console.log("exp :",JSON.stringify(exp,null,2))
              exp.splits.forEach( contact => {
-                if(contact.userId._id.toString()===userId.toString())
+                if(userId && contact.userId._id.toString()===userId.toString())
                     return;
                 const {_id,name,email} = contact.userId;
                 otherUser = {_id,name,email};
@@ -78,13 +77,14 @@ const personalExpensesWithUsers = async(userId)=>{
          })
          const present = new Set();
          const uniqueUsers = [];
-          usersExpenseWith.forEach( user =>{
+         usersExpenseWith.forEach( user =>{
              if(!present.has(user._id))
-             {
-                uniqueUsers.push(user);
-                present.add(user._id)
-             }
-         })
+                {
+                    uniqueUsers.push(user);
+                    present.add(user._id)
+                }
+            })
+            
         //   console.log("actual ans :",usersExpenseWith);
         //   console.log("uniqe ones :",uniqueUsers)
          return uniqueUsers;
@@ -268,6 +268,9 @@ const getperiodicExpenses = async({userId})=>{
   }
 }
 
+const allNonGroupExpenses = async()=>{
+    return await expenseRepo.getAll({groupId:null});
+}
 module.exports = {
    createExpense,
    getUserExpenses,
@@ -275,5 +278,6 @@ module.exports = {
    personalExpensesWithUsers,
    expenseWithPerson,
    expensesInGroup,
-   getperiodicExpenses
+   getperiodicExpenses,
+   allNonGroupExpenses
 }

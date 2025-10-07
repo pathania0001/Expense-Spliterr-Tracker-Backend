@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const {PORT,DB_URI,DB_NAME} = require('../config')
-
+const {DB_URI,DB_NAME} = require('../config');
 const mongoDBConnect = async () => {
 
    try {
